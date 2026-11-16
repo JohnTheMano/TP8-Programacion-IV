@@ -1,0 +1,40 @@
+# # Entorno virtual
+# .venv/
+
+# # Archivos de Python
+# __pycache__/
+# *.py[cod]
+
+# # Variables de entorno y contraseñas
+# .env
+
+# # Archivos de configuración del editor
+# .vscode/
+
+# Entornos virtuales Python
+.venv/
+**/.venv/
+
+# Archivos Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Variables de entorno y contraseñas
+.env
+.env.*
+!.env.example
+
+# Frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+
+# Editores
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

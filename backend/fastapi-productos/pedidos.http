@@ -1,0 +1,75 @@
+
+@baseUrl = http://localhost:8000
+@productoId = 1
+@pedidoId = 6
+
+### 1. LISTAR PEDIDOS
+GET {{baseUrl}}/pedidos
+
+### 2. CREAR PEDIDO
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+    "detalles": [
+    {
+        "producto_id": {{productoId}},
+        "cantidad": 2
+    }
+    ]
+}
+
+### 3. OBTENER PEDIDO POR ID
+GET {{baseUrl}}/pedidos/{{pedidoId}}
+
+### 4. ACTUALIZAR ESTADO
+PUT {{baseUrl}}/pedidos/{{pedidoId}}
+Content-Type: application/json
+
+{
+    "estado": "CONFIRMADO"
+}
+
+### 5. ELIMINAR PEDIDO
+DELETE {{baseUrl}}/pedidos/{{pedidoId}}
+
+### 6. ERROR 422 - SIN DETALLES
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+    "detalles": []
+}
+
+### 7. ERROR 422 - PRODUCTO REPETIDO
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+    "detalles": [
+    {
+        "producto_id": {{productoId}},
+        "cantidad": 2
+    },
+    {
+        "producto_id": {{productoId}},
+        "cantidad": 3
+    }
+  ]
+}
+
+### 8. ERROR 404 - PEDIDO INEXISTENTE
+GET {{baseUrl}}/pedidos/999999
+
+### 9. ERROR 404 - PRODUCTO INEXISTENTE
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+    "detalles": [
+    {
+        "producto_id": 999999,
+        "cantidad": 1
+    }
+    ]
+}
