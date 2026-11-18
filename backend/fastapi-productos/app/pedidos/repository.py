@@ -15,6 +15,13 @@ class PedidoRepository:
         )
         return self.session.exec(statement).all()
 
+    def get_by_owner(self, usuario_id: int):
+        statement = select(Pedido).where(
+            Pedido.usuario_id == usuario_id,
+            Pedido.deleted_at.is_(None),
+        )
+        return self.session.exec(statement).all()
+
     def get_by_id(self, pedido_id: int):
         statement = select(Pedido).where(
             Pedido.id == pedido_id,

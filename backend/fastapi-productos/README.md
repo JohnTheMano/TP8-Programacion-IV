@@ -33,6 +33,11 @@ Instalar las dependencias:
 
 powershell
 pip install -r requirements.txt
+Ejecutar el seed idempotente:
+
+
+powershell
+python seed.py
 Iniciar el servidor:
 
 
@@ -43,10 +48,22 @@ Con el servidor iniciado, acceder a Swagger:
 
 http://localhost:8000/docs
 
-Pruebas con REST Client
-Las operaciones del módulo de pedidos se verifican mediante el archivo:
+Autenticación y permisos
 
-pedidos.http
+- `POST /api/v1/auth/register` es público y asigna los roles `user` y `CLIENTE`.
+- Las lecturas de categorías, productos e ingredientes requieren una sesión activa.
+- Las escrituras de categorías, productos e ingredientes requieren el rol `admin`.
+- `CLIENTE` puede crear pedidos y consultar únicamente los propios; `admin` puede consultar todos y actualizar o eliminar cualquiera.
+- Los pedidos creados antes de agregar `usuario_id` quedan sin propietario y solo son visibles para `admin`.
+
+Datos iniciales
+
+Ejecutar `python seed.py` desde esta carpeta. El seed crea los roles `admin`, `user` y `CLIENTE`, asigna `CLIENTE` a usuarios existentes con rol `user` y carga categorías, productos e ingredientes de ejemplo de forma idempotente. No crea cuentas con contraseñas predeterminadas.
+
+Pruebas con REST Client
+Los archivos `pedidos.http` y `productos.http` requieren credenciales. Reemplazar sus variables `COMPLETAR_*` por cuentas existentes antes de ejecutar las pruebas. Las cookies de sesión permiten probar las rutas protegidas.
+
+El archivo `pedidos.http` prueba el aislamiento de pedidos por cliente y las operaciones administrativas.
 
 Se incluyen pruebas de creación, consulta, actualización, eliminación lógica y validaciones de errores HTTP 404 y 422.
 
@@ -58,6 +75,6 @@ Aplicar los conceptos de desarrollo de APIs REST, persistencia con PostgreSQL, v
 
 Se implementa especialmente el patrón Unit of Work para garantizar que la creación de un pedido y sus detalles se realice de manera atómica.
 
-Trabajo Práctico – Unidad 8
+Trabajo Práctico – Unidad 9
 Programación IV
 Tecnicatura Universitaria en Programación a Distancia.

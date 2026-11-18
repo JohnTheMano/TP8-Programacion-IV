@@ -9,6 +9,12 @@ class Pedido(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True)
 
+    usuario_id: int | None = Field(
+        default=None,
+        foreign_key="usuarios.id",
+        index=True,
+    )
+
     fecha: datetime = Field(default_factory=datetime.now)
 
     estado: str = Field(default="PENDIENTE", max_length=20)

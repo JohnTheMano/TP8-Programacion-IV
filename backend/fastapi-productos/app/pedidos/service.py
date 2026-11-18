@@ -24,13 +24,18 @@ class PedidoService:
     def __init__(self, uow=None):
         self.uow = uow or PedidoUnitOfWork()
 
-    def listar(self):
+    def listar(self, usuario_id: int | None = None):
         with self.uow as uow:
-            pedidos = uow.pedidos.get_all()
+            pedidos = (
+                uow.pedidos.get_all()
+                if usuario_id is None
+                else uow.pedidos.get_by_owner(usuario_id)
+            )
 
             return [
                 PedidoRead(
                     id=pedido.id,
+                    usuario_id=pedido.usuario_id,
                     fecha=pedido.fecha,
                     estado=pedido.estado,
                     total=pedido.total,
@@ -42,17 +47,20 @@ class PedidoService:
                 for pedido in pedidos
             ]
 
-    def obtener(self, pedido_id: int):
+    def obtener(self, pedido_id: int, usuario_id: int | None = None):
         with self.uow as uow:
             pedido = uow.pedidos.get_by_id(pedido_id)
 
-            if pedido is None:
+            if pedido is None or (
+                usuario_id is not None and pedido.usuario_id != usuario_id
+            ):
                 raise PedidoNoEncontrado()
 
             detalles = uow.detalles.get_by_pedido(pedido_id)
 
             return PedidoRead(
                 id=pedido.id,
+                usuario_id=pedido.usuario_id,
                 fecha=pedido.fecha,
                 estado=pedido.estado,
                 total=pedido.total,
@@ -62,11 +70,12 @@ class PedidoService:
                 ],
             )
 
-    def crear(self, data: PedidoCreate):
+    def crear(self, data: PedidoCreate, usuario_id: int):
         with self.uow as uow:
 
             pedido = uow.pedidos.create(
                 Pedido(
+                    usuario_id=usuario_id,
                     fecha=datetime.now(timezone.utc),
                     estado="PENDIENTE",
                     total=0,
@@ -96,6 +105,7 @@ class PedidoService:
 
             return PedidoRead(
                 id=pedido.id,
+                usuario_id=pedido.usuario_id,
                 fecha=pedido.fecha,
                 estado=pedido.estado,
                 total=pedido.total,
@@ -118,6 +128,7 @@ class PedidoService:
 
             return PedidoRead(
                 id=pedido.id,
+                usuario_id=pedido.usuario_id,
                 fecha=pedido.fecha,
                 estado=pedido.estado,
                 total=pedido.total,

@@ -46,6 +46,7 @@ class PedidoRead(SQLModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    usuario_id: int | None
     fecha: datetime
     estado: str
     total: float

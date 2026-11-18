@@ -1,5 +1,7 @@
+from datetime import datetime
 
 from sqlmodel import SQLModel, Field
+from sqlalchemy import Column, DateTime
 
 
 class Categoria(SQLModel, table=True):
@@ -14,3 +16,8 @@ class Categoria(SQLModel, table=True):
     )
 
     descripcion: str = Field()
+
+    deleted_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), nullable=True),
+    )

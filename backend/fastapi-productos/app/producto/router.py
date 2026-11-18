@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session
 
 from app.core.database import engine
+from app.core.dependencies import get_current_active_user, require_role
 from app.producto.schema import (
     ProductoCreate,
     ProductoRead,
@@ -21,7 +22,10 @@ def obtener_sesion():
 
 
 @router.get("/", response_model=list[ProductoRead])
-def listar_productos(session: Session = Depends(obtener_sesion)):
+def listar_productos(
+    session: Session = Depends(obtener_sesion),
+    usuario=Depends(get_current_active_user),
+):
     return service.listar_productos(session)
 
 
@@ -29,6 +33,7 @@ def listar_productos(session: Session = Depends(obtener_sesion)):
 def obtener_producto(
     producto_id: int,
     session: Session = Depends(obtener_sesion),
+    usuario=Depends(get_current_active_user),
 ):
     producto = service.obtener_producto(session, producto_id)
 
@@ -45,6 +50,7 @@ def obtener_producto(
 def crear_producto(
     datos: ProductoCreate,
     session: Session = Depends(obtener_sesion),
+    admin=Depends(require_role(["admin"])),
 ):
     return service.crear_producto(session, datos)
 
@@ -54,6 +60,7 @@ def actualizar_producto(
     producto_id: int,
     datos: ProductoUpdate,
     session: Session = Depends(obtener_sesion),
+    admin=Depends(require_role(["admin"])),
 ):
     producto = service.obtener_producto(session, producto_id)
 
@@ -70,6 +77,7 @@ def actualizar_producto(
 def eliminar_producto(
     producto_id: int,
     session: Session = Depends(obtener_sesion),
+    admin=Depends(require_role(["admin"])),
 ):
     producto = service.obtener_producto(session, producto_id)
 
@@ -91,6 +99,7 @@ def asociar_categoria(
     producto_id: int,
     datos: ProductoCategoriaCreate,
     session: Session = Depends(obtener_sesion),
+    admin=Depends(require_role(["admin"])),
 ):
     producto = service.obtener_producto(session, producto_id)
 
@@ -122,6 +131,7 @@ def asociar_categoria(
 def listar_categorias_producto(
     producto_id: int,
     session: Session = Depends(obtener_sesion),
+    usuario=Depends(get_current_active_user),
 ):
     categorias = service.listar_categorias_producto(session, producto_id)
 
@@ -142,6 +152,7 @@ def desasociar_categoria(
     producto_id: int,
     categoria_id: int,
     session: Session = Depends(obtener_sesion),
+    admin=Depends(require_role(["admin"])),
 ):
     producto = service.obtener_producto(session, producto_id)
 

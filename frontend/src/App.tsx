@@ -1,20 +1,29 @@
 
-import { Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import CategoriasPage from './pages/CategoriasPage'
-import ProductsPage from './pages/ProductsPage'
-import IngredientesPage from './pages/IngredientesPage'
+import { useEffect } from 'react'
+import { useAuthStore } from '@/features/auth'
+import AppRouter from '@/routes/AppRouter'
+import Toast from '@/shared/components/Toast'
 
 function App() {
+  const checkSession = useAuthStore((state) => state.checkSession)
+  const status = useAuthStore((state) => state.status)
+
+  useEffect(() => {
+    void checkSession()
+  }, [checkSession])
+
+  if (status === 'checking') {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-lg font-semibold">Verificando sesión...</p>
+      </div>
+    )
+  }
+
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<CategoriasPage />} />
-        <Route path="/categorias" element={<CategoriasPage />} />
-        <Route path="/productos" element={<ProductsPage />} />
-        <Route path="/ingredientes" element={<IngredientesPage />} />
-      </Routes>
+      <AppRouter />
+      <Toast />
     </>
   )
 }

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlmodel import Session
 
 from app.core.database import get_session
+from app.core.dependencies import get_current_active_user, require_role
 from app.categoria import service
 from app.categoria.schema import CategoriaCreate, CategoriaRead, CategoriaUpdate
 
@@ -16,6 +17,7 @@ router = APIRouter(
 @router.get("/", response_model=list[CategoriaRead])
 def listar_categorias(
     session: Session = Depends(get_session),
+    usuario=Depends(get_current_active_user),
 ):
     return service.listar_categorias(session)
 
@@ -24,6 +26,7 @@ def listar_categorias(
 def obtener_categoria(
     categoria_id: int,
     session: Session = Depends(get_session),
+    usuario=Depends(get_current_active_user),
 ):
     categoria = service.obtener_categoria(session, categoria_id)
 
@@ -44,6 +47,7 @@ def obtener_categoria(
 def crear_categoria(
     datos: CategoriaCreate,
     session: Session = Depends(get_session),
+    admin=Depends(require_role(["admin"])),
 ):
     return service.crear_categoria(session, datos)
 
@@ -53,6 +57,7 @@ def actualizar_categoria(
     categoria_id: int,
     datos: CategoriaUpdate,
     session: Session = Depends(get_session),
+    admin=Depends(require_role(["admin"])),
 ):
     categoria = service.obtener_categoria(session, categoria_id)
 
@@ -72,6 +77,7 @@ def actualizar_categoria(
 def eliminar_categoria(
     categoria_id: int,
     session: Session = Depends(get_session),
+    admin=Depends(require_role(["admin"])),
 ):
     categoria = service.obtener_categoria(session, categoria_id)
 

@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
+from app.core.dependencies import get_current_active_user, require_role
 from app.core.database import get_session
 from app.ingrediente.schema import (
     IngredienteCreate,
@@ -19,6 +20,7 @@ router = APIRouter(
 @router.get("/", response_model=list[IngredienteRead])
 def listar_ingredientes(
     session: Session = Depends(get_session),
+    usuario=Depends(get_current_active_user),
 ):
     return service.obtener_ingredientes(session)
 
@@ -31,6 +33,7 @@ def listar_ingredientes(
 def crear_ingrediente(
     datos: IngredienteCreate,
     session: Session = Depends(get_session),
+    admin=Depends(require_role(["admin"])),
 ):
     return service.crear_ingrediente(session, datos)
 
@@ -40,6 +43,7 @@ def actualizar_ingrediente(
     ingrediente_id: int,
     datos: IngredienteUpdate,
     session: Session = Depends(get_session),
+    admin=Depends(require_role(["admin"])),
 ):
     ingrediente = service.actualizar_ingrediente(
         session, ingrediente_id, datos
@@ -58,6 +62,7 @@ def actualizar_ingrediente(
 def eliminar_ingrediente(
     ingrediente_id: int,
     session: Session = Depends(get_session),
+    admin=Depends(require_role(["admin"])),
 ):
     eliminado = service.eliminar_ingrediente(session, ingrediente_id)
 

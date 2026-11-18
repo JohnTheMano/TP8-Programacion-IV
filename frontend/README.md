@@ -1,6 +1,6 @@
 Food Store – Frontend
-Descripción
-Aplicación web desarrollada para el Trabajo Práctico de la Unidad 8 de Programación IV de la Tecnicatura Universitaria en Programación.
+
+Aplicación web desarrollada para el Trabajo Práctico de la Unidad 10 de Programación IV de la Tecnicatura Universitaria en Programación.
 
 El sistema permite administrar categorías, productos e ingredientes mediante una interfaz desarrollada con React y TypeScript, conectada a un backend REST con FastAPI.
 
@@ -35,28 +35,17 @@ Eliminación con confirmación.
 Validación del nombre obligatorio.
 Organización del proyecto
 
-text
-src/
-├── components/
-│   ├── CategoriaList.tsx
-│   ├── CategoriaModal.tsx
-│   ├── ProductoList.tsx
-│   ├── ProductoModal.tsx
-│   └── ...
-├── pages/
-│   ├── CategoriasPage.tsx
-│   ├── ProductsPage.tsx
-│   └── IngredientesPage.tsx
-├── services/
-│   ├── categoria.ts
-│   ├── producto.ts
-│   └── ingrediente.ts
-├── types/
-│   ├── categoria.ts
-│   ├── producto.ts
-│   └── ingrediente.ts
-├── App.tsx
-└── main.tsx
+El código usa arquitectura por features:
+
+- `src/features/auth`: autenticación, registro, administración y store de sesión.
+- `src/features/categories`: categorías, componentes, tipos y hook de datos.
+- `src/features/products`: productos, componentes, tipos y hook de datos.
+- `src/features/ingredients`: ingredientes, componentes, tipos y hook de datos.
+- `src/shared`: componentes compartidos e instancia de Axios con interceptores.
+- `src/store`: tema persistido y notificaciones.
+- `src/routes`: rutas públicas, protegidas y por rol.
+
+Cada feature expone su API pública mediante un archivo `index.ts`. Los imports entre carpetas usan el alias `@/`.
 Instalación
 Instalar las dependencias:
 
@@ -96,6 +85,6 @@ Para ejecutar ESLint:
 
 bash
 pnpm lint
-Trabajo Práctico – Unidad 8
+Trabajo Práctico – Unidad 10
 Programación IV
 Tecnicatura Universitaria en Programación a Distancia.
